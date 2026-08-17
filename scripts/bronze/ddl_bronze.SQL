@@ -8,83 +8,115 @@ Script Purpose:
 	  Run this script to re-define the DDL structure of 'bronze' Tables
 ===============================================================================
 */
-
-IF OBJECT_ID('bronze.crm_cust_info', 'U') IS NOT NULL
-    DROP TABLE bronze.crm_cust_info;
+--Create
+IF OBJECT_ID('bronze.data_dictionary') IS NOT NULL
+    DROP TABLE bronze.data_dictionary;
 GO
 
-CREATE TABLE bronze.crm_cust_info (
-    cst_id              INT,
-    cst_key             NVARCHAR(50),
-    cst_firstname       NVARCHAR(50),
-    cst_lastname        NVARCHAR(50),
-    cst_marital_status  NVARCHAR(50),
-    cst_gndr            NVARCHAR(50),
-    cst_create_date     DATE
+CREATE TABLE bronze.data_dictionary
+(
+    data_table NVARCHAR(50),
+    data_field NVARCHAR(50),
+    data_description NVARCHAR(max)
 );
 GO
 
-IF OBJECT_ID('bronze.crm_prd_info', 'U') IS NOT NULL
-    DROP TABLE bronze.crm_prd_info;
+-------------------------------------
+IF OBJECT_ID('bronze.order_item_refunds') IS NOT NULL
+    DROP TABLE bronze.order_item_refunds;
 GO
 
-CREATE TABLE bronze.crm_prd_info (
-    prd_id       INT,
-    prd_key      NVARCHAR(50),
-    prd_nm       NVARCHAR(50),
-    prd_cost     INT,
-    prd_line     NVARCHAR(50),
-    prd_start_dt DATETIME,
-    prd_end_dt   DATETIME
+CREATE TABLE bronze.order_item_refunds
+(
+    order_item_refund_id int,
+    created_at DATETIME,
+    order_item_id INT,
+    order_id INT,
+    refund_amount_usd FLOAT
 );
 GO
 
-IF OBJECT_ID('bronze.crm_sales_details', 'U') IS NOT NULL
-    DROP TABLE bronze.crm_sales_details;
+-------------------------------------
+IF OBJECT_ID('bronze.order_items', 'U') IS NOT NULL
+    DROP TABLE bronze.order_items;
 GO
 
-CREATE TABLE bronze.crm_sales_details (
-    sls_ord_num  NVARCHAR(50),
-    sls_prd_key  NVARCHAR(50),
-    sls_cust_id  INT,
-    sls_order_dt INT,
-    sls_ship_dt  INT,
-    sls_due_dt   INT,
-    sls_sales    INT,
-    sls_quantity INT,
-    sls_price    INT
+CREATE TABLE bronze.order_items
+(
+    order_item_id int,
+    created_at DATETIME,
+    order_id INT,
+    product_id INT,
+    is_primary_item BIT,
+    price_usd FLOAT,
+    cogs_usd FLOAT
+
 );
 GO
 
-IF OBJECT_ID('bronze.erp_loc_a101', 'U') IS NOT NULL
-    DROP TABLE bronze.erp_loc_a101;
+--------------------------------------
+IF OBJECT_ID('bronze.orders', 'U') IS NOT NULL
+    DROP TABLE bronze.orders;
 GO
 
-CREATE TABLE bronze.erp_loc_a101 (
-    cid    NVARCHAR(50),
-    cntry  NVARCHAR(50)
+CREATE TABLE bronze.orders
+(
+   order_id INT,
+   created_at DATETIME,
+   website_session_id INT,
+   user_id INT,
+   primary_product_id INT,
+   items_purchased INT,
+   price_usd FLOAT,
+   cogs_usd FLOAT
+
 );
 GO
 
-IF OBJECT_ID('bronze.erp_cust_az12', 'U') IS NOT NULL
-    DROP TABLE bronze.erp_cust_az12;
+
+-------------------------------------
+IF OBJECT_ID('bronze.products', 'U') IS NOT NULL
+    DROP TABLE bronze.products;
 GO
 
-CREATE TABLE bronze.erp_cust_az12 (
-    cid    NVARCHAR(50),
-    bdate  DATE,
-    gen    NVARCHAR(50)
+CREATE TABLE bronze.products
+(
+   prodcut_id INT,
+   created_at DATETIME,
+   product_name NVARCHAR(max)
+
 );
 GO
 
-IF OBJECT_ID('bronze.erp_px_cat_g1v2', 'U') IS NOT NULL
-    DROP TABLE bronze.erp_px_cat_g1v2;
+---------------------------------------
+IF OBJECT_ID('bronze.website_pageviews', 'U') IS NOT NULL
+    DROP TABLE bronze.website_pageviews;
 GO
 
-CREATE TABLE bronze.erp_px_cat_g1v2 (
-    id           NVARCHAR(50),
-    cat          NVARCHAR(50),
-    subcat       NVARCHAR(50),
-    maintenance  NVARCHAR(50)
+CREATE TABLE bronze.website_pageviews
+(
+   website_pageview_id INT,
+   created_at DATETIME,
+   website_session_id INT,
+   pageview_url NVARCHAR(max)
+
+);
+
+---------------------------------------
+IF OBJECT_ID('bronze.website_sessions', 'U') IS NOT NULL
+    DROP TABLE bronze.website_sessions;
+GO
+
+CREATE TABLE bronze.website_sessions
+(
+   website_session_id INT,
+   created_at DATETIME,
+   user_id INT,
+   is_repeat_session BIT,
+   utm_source NVARCHAR(50),
+   utm_campaign NVARCHAR(50),
+   utm_content NVARCHAR(50),
+   device_type NVARCHAR(50),
+   http_referer NVARCHAR(MAX)
 );
 GO
